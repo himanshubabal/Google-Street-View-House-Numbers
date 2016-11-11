@@ -1,0 +1,7 @@
+notMNIST_large/
+notMNIST_small/
+notMNIST.pickle
+test_32x32_grey.mat
+test_32x32.mat
+train_32x32_grey.mat
+train_32x32.mat
