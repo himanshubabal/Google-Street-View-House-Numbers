@@ -11774,14 +11774,22 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>Run 'MNIST_dataset_downloader.py'</li>
-<li>Run 'MNIST_sequence_generator.py'</li>
-<li>Run 'MNIST sequence generator.ipynb'</li>
-<li>Run 'SVHN Data Processing.ipynb'</li>
+<li>Run 'MNIST_dataset_downloader.py'<ul>
+<li>It will download MNIST data and convert into mat files for easy use'</li>
+</ul>
+</li>
 </ul>
 <ul>
-<li>Run 'CNN on MNIST.ipynb'</li>
-<li>Run 'CNN on Multi.ipynb'</li>
+<li>Run 'MNIST_sequence_generator.py'<ul>
+<li>'It will make artificial data that can be used to train our neural network'</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Run 'SVHN_Data_Processing.py'<ul>
+<li>'It will download and prepare SVHN Data for using in next files'</li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -11821,6 +11829,17 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><strong> Code Can be foung in 'CNN_on_Multi.ipynb' </strong></p>
+<p><strong> Here I have pasted Code templates from that file </strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Question-1">Question 1<a class="anchor-link" href="#Question-1">&#182;</a></h3><p><em>What approach did you take in coming up with a solution to this problem?</em></p>
 
 </div>
@@ -11836,6 +11855,132 @@ My Model is based on Convolutional Neural Network</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">HEIGHT = 28</span>
+<span class="sd">No_Images = 5</span>
+<span class="sd">WIDTH = HEIGHT * No_Images</span>
+<span class="sd">    </span>
+<span class="sd">graph = tf.Graph()</span>
+
+<span class="sd">with graph.as_default():</span>
+<span class="sd">    HEIGHT = 28</span>
+<span class="sd">    No_Images = 5</span>
+<span class="sd">    WIDTH = HEIGHT * No_Images</span>
+<span class="sd">#     HEIGHT = tf.placeholder(tf.float32)</span>
+<span class="sd">#     WIDTH = tf.placeholder(tf.float32)</span>
+<span class="sd">    </span>
+<span class="sd">    X = tf.placeholder(tf.float32, [None, HEIGHT, WIDTH, 1])</span>
+<span class="sd">    Y_ = tf.placeholder(tf.int32, [None, 6])</span>
+<span class="sd">    </span>
+<span class="sd">    # Learning Rate - alpha</span>
+<span class="sd">    alpha = tf.placeholder(tf.float32)</span>
+<span class="sd">    </span>
+<span class="sd">    # Dropout Probablity</span>
+<span class="sd">    pkeep = tf.placeholder(tf.float32)</span>
+<span class="sd">    </span>
+<span class="sd">    # 5 Layers and their no of neurons</span>
+<span class="sd">    # 3 Convolutional Layers and a fully connected layer</span>
+<span class="sd">    K = 6     # First Conv Layer with depth 6</span>
+<span class="sd">    L = 12     # Second Conv Layer with depth 12</span>
+<span class="sd">    M = 24    # Third Conv layer with depth 24</span>
+<span class="sd">    N = 200   # Fourth Fully Connected layer with 200 neurons</span>
+<span class="sd">    # Last one will be softmax layer with 10 output channels</span>
+<span class="sd">    </span>
+<span class="sd">    W1 = tf.Variable(tf.truncated_normal([6, 6, 1, K], stddev=0.1))    # 6x6 patch, 1 input channel, K output channels</span>
+<span class="sd">    B1 = tf.Variable(tf.constant(0.1, tf.float32, [K]))</span>
+<span class="sd">    </span>
+<span class="sd">    W2 = tf.Variable(tf.truncated_normal([5, 5, K, L], stddev=0.1))</span>
+<span class="sd">    B2 = tf.Variable(tf.constant(0.1, tf.float32, [L]))</span>
+<span class="sd">    </span>
+<span class="sd">    W3 = tf.Variable(tf.truncated_normal([4, 4, L, M], stddev=0.1))</span>
+<span class="sd">    B3 = tf.Variable(tf.constant(0.1, tf.float32, [M]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_1 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_1 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_2 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_2 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_3 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_3 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_4 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_4 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_5 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_5 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    # Model</span>
+<span class="sd">    stride = 1  # output is 28x140</span>
+<span class="sd">    Y1 = tf.nn.relu(tf.nn.conv2d(X, W1, strides=[1, stride, stride, 1], padding=&#39;SAME&#39;) + B1)</span>
+<span class="sd">    </span>
+<span class="sd">    stride = 2  # output is 14x70</span>
+<span class="sd">    Y2 = tf.nn.relu(tf.nn.conv2d(Y1, W2, strides=[1, stride, stride, 1], padding=&#39;SAME&#39;) + B2)</span>
+<span class="sd">    </span>
+<span class="sd">    stride = 2  # output is 7x35</span>
+<span class="sd">    Y3 = tf.nn.relu(tf.nn.conv2d(Y2, W3, strides=[1, stride, stride, 1], padding=&#39;SAME&#39;) + B3)</span>
+
+<span class="sd">    # reshape the output from the third convolution for the fully connected layer</span>
+<span class="sd">    shape = Y3.get_shape().as_list()</span>
+<span class="sd">    YY = tf.reshape(Y3, shape=[-1, shape[1] * shape[2] * shape[3]])</span>
+<span class="sd">    </span>
+<span class="sd">    W4 = tf.Variable(tf.truncated_normal([shape[1] * shape[2] * shape[3], N], stddev=0.1))</span>
+<span class="sd">    B4 = tf.Variable(tf.constant(0.1, tf.float32, [N]))</span>
+
+<span class="sd">    Y4 = tf.nn.relu(tf.matmul(YY, W4) + B4)</span>
+<span class="sd">    YY4 = tf.nn.dropout(Y4, pkeep)</span>
+<span class="sd">    </span>
+<span class="sd">    Ylogits_1 = tf.matmul(YY4, W5_1) + B5_1</span>
+<span class="sd">    Ylogits_2 = tf.matmul(YY4, W5_2) + B5_2</span>
+<span class="sd">    Ylogits_3 = tf.matmul(YY4, W5_3) + B5_3</span>
+<span class="sd">    Ylogits_4 = tf.matmul(YY4, W5_4) + B5_4</span>
+<span class="sd">    Ylogits_5 = tf.matmul(YY4, W5_5) + B5_5   </span>
+<span class="sd">    ## (&#39;Ylogits_1 shape : &#39;, [None, 11])</span>
+<span class="sd">    </span>
+<span class="sd">    Y_1 = tf.nn.softmax(Ylogits_1)</span>
+<span class="sd">    Y_2 = tf.nn.softmax(Ylogits_2)</span>
+<span class="sd">    Y_3 = tf.nn.softmax(Ylogits_3)</span>
+<span class="sd">    Y_4 = tf.nn.softmax(Ylogits_4)</span>
+<span class="sd">    Y_5 = tf.nn.softmax(Ylogits_5)</span>
+<span class="sd">  </span>
+<span class="sd">    cross_entropy = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_1, Y_[:,1])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_2, Y_[:,2])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_3, Y_[:,3])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_4, Y_[:,4])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_5, Y_[:,5]))</span>
+
+<span class="sd">#     cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(Ylogits_1, Y_[:,1])) +\</span>
+<span class="sd">#     tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(Ylogits_2, Y_[:,2])) +\</span>
+<span class="sd">#     tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(Ylogits_3, Y_[:,3])) +\</span>
+<span class="sd">#     tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(Ylogits_4, Y_[:,4])) +\</span>
+<span class="sd">#     tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(Ylogits_5, Y_[:,5]))</span>
+
+<span class="sd"># Having two different functions is a convenience, as they produce the same result.</span>
+<span class="sd"># The difference is simple:</span>
+<span class="sd"># For sparse_softmax_cross_entropy_with_logits, labels must have the shape [batch_size] and the dtype int32 or int64. Each label is an int in range [0, num_classes).</span>
+<span class="sd"># For softmax_cross_entropy_with_logits, labels must have the shape [batch_size, num_classes] and dtype float32 or float64.</span>
+<span class="sd"># Labels used in softmax_cross_entropy_with_logits are the one hot version of labels used in sparse_softmax_cross_entropy_with_logits.</span>
+<span class="sd">    </span>
+<span class="sd">    # Predictions for the training, validation, and test data.</span>
+<span class="sd">    train_prediction = tf.pack([Y_1, Y_2, Y_3, Y_4, Y_5])</span>
+<span class="sd">    </span>
+<span class="sd">    train_step = tf.train.AdamOptimizer(alpha).minimize(cross_entropy)</span>
+<span class="sd">    </span>
+<span class="sd">    model_saver = tf.train.Saver()</span>
+<span class="sd">    </span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -11942,6 +12087,7 @@ I created Synthetic data from MNIST dataset</p>
 <li>Take any 5 image at random and combine them to create one image</li>
 <li>Keep repeting the process as many times as images needed</li>
 </ul>
+<p><strong>Python file - 'MNIST_sequence_generator.py'</strong></p>
 
 </div>
 </div>
@@ -13369,12 +13515,128 @@ Minibatch accuracy: 98.4%</code></pre>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">graphaa = tf.Graph()</span>
+
+<span class="sd">with graphaa.as_default():</span>
+<span class="sd">    HEIGHT_1 = 32</span>
+<span class="sd">    WIDTH_1 = 32</span>
+<span class="sd">    </span>
+<span class="sd">    X = tf.placeholder(tf.float32, [None, HEIGHT_1, WIDTH_1, 1])</span>
+<span class="sd">    Y_ = tf.placeholder(tf.int32, [None, 6])</span>
+<span class="sd">    </span>
+<span class="sd">    # Learning Rate - alpha</span>
+<span class="sd">    alpha = tf.placeholder(tf.float32)</span>
+<span class="sd">    </span>
+<span class="sd">    # Dropout Probablity</span>
+<span class="sd">    pkeep = tf.placeholder(tf.float32)</span>
+<span class="sd">    </span>
+<span class="sd">    # 5 Layers and their no of neurons</span>
+<span class="sd">    # 3 Convolutional Layers and a fully connected layer</span>
+<span class="sd">    K = 6     # First Conv Layer with depth 6</span>
+<span class="sd">    L = 12     # Second Conv Layer with depth 12</span>
+<span class="sd">    M = 24    # Third Conv layer with depth 24</span>
+<span class="sd">    N = 200   # Fourth Fully Connected layer with 200 neurons</span>
+<span class="sd">    # Last one will be softmax layer with 10 output channels</span>
+<span class="sd">    </span>
+<span class="sd">    W1 = tf.Variable(tf.truncated_normal([6, 6, 1, K], stddev=0.1))    # 6x6 patch, 1 input channel, K output channels</span>
+<span class="sd">    B1 = tf.Variable(tf.constant(0.1, tf.float32, [K]))</span>
+<span class="sd">    </span>
+<span class="sd">    W2 = tf.Variable(tf.truncated_normal([5, 5, K, L], stddev=0.1))</span>
+<span class="sd">    B2 = tf.Variable(tf.constant(0.1, tf.float32, [L]))</span>
+<span class="sd">    </span>
+<span class="sd">    W3 = tf.Variable(tf.truncated_normal([4, 4, L, M], stddev=0.1))</span>
+<span class="sd">    B3 = tf.Variable(tf.constant(0.1, tf.float32, [M]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_1 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_1 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_2 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_2 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_3 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_3 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_4 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_4 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    W5_5 = tf.Variable(tf.truncated_normal([N, 11], stddev=0.1))</span>
+<span class="sd">    B5_5 = tf.Variable(tf.constant(0.1, tf.float32, [11]))</span>
+<span class="sd">    </span>
+<span class="sd">    # Model</span>
+<span class="sd">    stride = 1  # output is 28x140</span>
+<span class="sd">    Y1 = tf.nn.relu(tf.nn.conv2d(X, W1, strides=[1, stride, stride, 1], padding=&#39;SAME&#39;) + B1)</span>
+<span class="sd">    </span>
+<span class="sd">    stride = 2  # output is 14x70</span>
+<span class="sd">    Y2 = tf.nn.relu(tf.nn.conv2d(Y1, W2, strides=[1, stride, stride, 1], padding=&#39;SAME&#39;) + B2)</span>
+<span class="sd">    </span>
+<span class="sd">    stride = 2  # output is 7x35</span>
+<span class="sd">    Y3 = tf.nn.relu(tf.nn.conv2d(Y2, W3, strides=[1, stride, stride, 1], padding=&#39;SAME&#39;) + B3)</span>
+
+<span class="sd">    # reshape the output from the third convolution for the fully connected layer</span>
+<span class="sd">    shape = Y3.get_shape().as_list()</span>
+<span class="sd">    YY = tf.reshape(Y3, shape=[-1, shape[1] * shape[2] * shape[3]])</span>
+<span class="sd">    </span>
+<span class="sd">    W4 = tf.Variable(tf.truncated_normal([shape[1] * shape[2] * shape[3], N], stddev=0.1))</span>
+<span class="sd">    B4 = tf.Variable(tf.constant(0.1, tf.float32, [N]))</span>
+
+<span class="sd">    Y4 = tf.nn.relu(tf.matmul(YY, W4) + B4)</span>
+<span class="sd">    YY4 = tf.nn.dropout(Y4, pkeep)</span>
+<span class="sd">    </span>
+<span class="sd">    Ylogits_1 = tf.matmul(YY4, W5_1) + B5_1</span>
+<span class="sd">    Ylogits_2 = tf.matmul(YY4, W5_2) + B5_2</span>
+<span class="sd">    Ylogits_3 = tf.matmul(YY4, W5_3) + B5_3</span>
+<span class="sd">    Ylogits_4 = tf.matmul(YY4, W5_4) + B5_4</span>
+<span class="sd">    Ylogits_5 = tf.matmul(YY4, W5_5) + B5_5   </span>
+<span class="sd">    ## (&#39;Ylogits_1 shape : &#39;, [None, 11])</span>
+<span class="sd">    </span>
+<span class="sd">    Y_1 = tf.nn.softmax(Ylogits_1)</span>
+<span class="sd">    Y_2 = tf.nn.softmax(Ylogits_2)</span>
+<span class="sd">    Y_3 = tf.nn.softmax(Ylogits_3)</span>
+<span class="sd">    Y_4 = tf.nn.softmax(Ylogits_4)</span>
+<span class="sd">    Y_5 = tf.nn.softmax(Ylogits_5)</span>
+<span class="sd">  </span>
+<span class="sd">    cross_entropy = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_1, Y_[:,1])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_2, Y_[:,2])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_3, Y_[:,3])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_4, Y_[:,4])) +\</span>
+<span class="sd">    tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(Ylogits_5, Y_[:,5]))</span>
+
+<span class="sd">    train_prediction = tf.pack([Y_1, Y_2, Y_3, Y_4, Y_5])</span>
+<span class="sd">    </span>
+<span class="sd">    train_step = tf.train.AdamOptimizer(alpha).minimize(cross_entropy)</span>
+<span class="sd">    </span>
+<span class="sd">    model_saver = tf.train.Saver()</span>
+<span class="sd">    </span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Question-4">Question 4<a class="anchor-link" href="#Question-4">&#182;</a></h3><p><em>Describe how you set up the training and testing data for your model. How does the model perform on a realistic dataset?</em></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong> Testing and training datasets are made using the code in file - 'SVHN_Data_Processing.py'</strong></p>
 
 </div>
 </div>
