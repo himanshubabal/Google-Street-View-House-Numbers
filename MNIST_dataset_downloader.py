@@ -44,20 +44,20 @@ def maybe_download(filename, force=False):
 	return filename
 
 def maybe_extract(filename, force=False):
-    outfile = filename[:-3]
-    if os.path.exists(outfile) and not force:
-    	# You may override by setting force=True.
-    	print('%s already present - Skipping extraction of %s.' % (outfile, filename))
-    else:
+	outfile = filename[:-3]
+	if os.path.exists(outfile) and not force:
+		# You may override by setting force=True.
+		print('%s already present - Skipping extraction of %s.' % (outfile, filename))
+	else:
 		print('Extracting data for %s.' % outfile)
 		inF = gzip.open(filename, 'rb')
 		outF = open(outfile, 'wb')
 		outF.write(inF.read())
 		inF.close()
 		outF.close()
-    data_folders = outfile
-    print(data_folders)
-    return data_folders
+	data_folders = outfile
+	print(data_folders)
+	return data_folders
 
 
 train_images_zip = maybe_download('train-images-idx3-ubyte.gz')
