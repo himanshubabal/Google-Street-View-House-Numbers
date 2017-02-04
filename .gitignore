@@ -31,3 +31,7 @@ train/
 SVHN_new_data_struct.pickle
 SVHN_new_interm.pickle
 
+SVHN_new_inter_train.pickle
+SVHN_new_inter_test.pickle
+SVHN_new_inter_extra.pickle
+SVHN_new_inter_all.pickle
