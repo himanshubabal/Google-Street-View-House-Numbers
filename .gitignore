@@ -1,37 +1,42 @@
 notMNIST_large/
 notMNIST_small/
 notMNIST.pickle
-test_32x32_grey.mat
-test_32x32.mat
-train_32x32_grey.mat
-train_32x32.mat
-mnist_default_test_28x28.mat
-mnist_default_train_28x28.mat
-mnist_multi_test_28x140.mat
-mnist_multi_train_28x140.mat
-notMNIST.pickle
-Saved Models/
-SVHN_multi.pickle
+#test_32x32_grey.mat
+#test_32x32.mat
+#train_32x32_grey.mat
+#train_32x32.mat
+#mnist_default_test_28x28.mat
+#mnist_default_train_28x28.mat
+#mnist_multi_test_28x140.mat
+#mnist_multi_train_28x140.mat
+#notMNIST.pickle
+#SVHN_multi.pickle
 t10k-images-idx3-ubyte
-t10k-images-idx3-ubyte.gz
+#t10k-images-idx3-ubyte.gz
 t10k-labels-idx1-ubyte
-t10k-labels-idx1-ubyte.gz
+#t10k-labels-idx1-ubyte.gz
 train-images-idx3-ubyte
-train-images-idx3-ubyte.gz
+#train-images-idx3-ubyte.gz
 train-labels-idx1-ubyte
-train-labels-idx1-ubyte.gz
+#train-labels-idx1-ubyte.gz
+*.gz
+*.mat
 
-# Datasets and Pickle files
-extra.tar.gz
+# Datasets
+#extra.tar.gz
 extra/
-test.tar.gz
+#test.tar.gz
 test/
-train.tar.gz
+#train.tar.gz
 train/
-SVHN_new_data_struct.pickle
-SVHN_new_interm.pickle
+*.tar.gz
 
-SVHN_new_inter_train.pickle
-SVHN_new_inter_test.pickle
-SVHN_new_inter_extra.pickle
-SVHN_new_inter_all.pickle
+# Pickle files
+#SVHN_new_data_struct.pickle
+#SVHN_new_interm.pickle
+#SVHN_new_inter_train.pickle
+#SVHN_new_inter_test.pickle
+#SVHN_new_inter_extra.pickle
+#SVHN_new_inter_all.pickle
+*.pickle
+
