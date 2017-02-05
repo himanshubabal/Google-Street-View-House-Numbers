@@ -20,23 +20,6 @@ mnist_dataset_location = "datasets/MNIST/"
 multi_image_width = 32*3
 multi_image_height = 32
 
-train_images = idx2numpy.convert_from_file(mnist_dataset_location + 'train-images-idx3-ubyte')
-train_label = idx2numpy.convert_from_file(mnist_dataset_location + 'train-labels-idx1-ubyte')
-
-test_images = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-images-idx3-ubyte')
-test_label = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-labels-idx1-ubyte')
-
-train = {}
-test = {}
-
-train['X'] = train_images
-train['y'] = train_label
-
-test['X'] = test_images
-test['y'] = test_label
-
-# print('train : ', train_images.shape, train_label.shape)
-# print('test : ', test_images.shape, test_label.shape)
 
 def random_insert_seq(lst, seq):
     insert_locations = random.sample(xrange(len(lst) + len(seq)), len(seq))
@@ -136,11 +119,7 @@ def stack_labels_horizontally(list_of_outputs, no_of_images_to_combine):
     
     return f_list
 
-def plot_img(image):
-    plt.imshow(image)
-    plt.show()
-
-def multiple_img_dataset_generator(X_dataset, Y_dataset, no_of_iamges_to_combine, length_of_new_dataset) :
+def multiple_img_dataset_generator(X_dataset, Y_dataset, no_of_images_to_combine, length_of_new_dataset) :
     assert (X_dataset.shape[0] == Y_dataset.shape[0])
     
     n = X_dataset.shape[0]
@@ -175,32 +154,3 @@ def multiple_img_dataset_generator(X_dataset, Y_dataset, no_of_iamges_to_combine
     print('Matrix Conversion Successful')
     
     return X_new, Y_new
-
-
-X_test_new, Y_test_new = randomize_inputs(test_images, test_label, 2500)
-X_test_multi, Y_test_multi = multiple_img_dataset_generator(X_test_new, Y_test_new, 5, 10000)
-
-X_train_new, Y_train_new = randomize_inputs(train_images, train_label, 20000)
-X_train_multi, Y_train_multi = multiple_img_dataset_generator(X_train_new, Y_train_new, 5, 80000)
-
-X_train_multi = X_train_multi[:,:,:,np.newaxis]
-X_test_multi = X_test_multi[:,:,:,np.newaxis]
-
-print('Final train and test datasets sizes')
-print (X_train_multi.shape, Y_train_multi.shape)
-print (X_test_multi.shape, Y_test_multi.shape)
-
-train_multi = {}
-test_multi = {}
-
-train_multi['X'] = X_train_multi
-train_multi['y'] = Y_train_multi
-
-test_multi['X'] = X_test_multi
-test_multi['y'] = Y_test_multi
-
-scipy.io.savemat(mnist_dataset_location + 'mnist_multi_train_32x96.mat', train_multi)
-scipy.io.savemat(mnist_dataset_location + 'mnist_multi_test_32x96.mat', test_multi)
-
-print('Conversion Successful. mat files saved with the names \nmnist_multi_train_32x96.mat and \nmnist_multi_test_32x96.mat')
-print('Dataset Location : datasets/MNIST/')
