@@ -40,3 +40,6 @@ train/
 #SVHN_new_inter_all.pickle
 *.pickle
 
+*.hkl
+*.hdf5
+
