@@ -6,7 +6,7 @@ from six.moves.urllib.request import urlretrieve
 from MNIST_Python_File.MNIST_downloader import download_progress_hook
 from MNIST_Python_File.MNIST_create import download_and_create_data
 
-url = 'https://www.dropbox.com/s/nzplzt9dh468mrz/SVHN_new_data_struct.pickle?dl=1'
+url = 'https://www.dropbox.com/s/p5mg9q81q768n93/MNIST_multi.hdf5?dl=1'
 pickle_location = 'datasets/pickles/'
 last_percent_reported = None
 
@@ -21,18 +21,18 @@ def maybe_download(filename, force=True):
 
 # Will use 2nd Method if additional command line arguments are given
 if (len(sys.argv) > 1):
-	maybe_download(pickle_location + 'SVHN_new_data_struct.pickle')
+	maybe_download(pickle_location + 'MNIST_multi.hdf5')
 
 print()
 print('You have two Options to get MNIST Data : ')
 print('1. Download the Data from Yann LeCun Website and create MNIST-Multi Data Now \n   It can be very Slow.')
 print()
-print('2. Download pre-processed pickle file  MNIST_multi.pickle  \n   It will save you a lot of time.')
+print('2. Download pre-processed pickle file  MNIST_multi.hdf5  \n   It will save you a lot of time.')
 print()
 
 user_input = input("Please choose method to get Data. \ni.e. Write 1 or 2 depending on your choice    : ")
 if user_input == '1' :
 	download_and_create_data()
 else :
-	maybe_download(pickle_location + 'SVHN_new_data_struct.pickle')
+	maybe_download(pickle_location + 'MNIST_multi.hdf5')
 
