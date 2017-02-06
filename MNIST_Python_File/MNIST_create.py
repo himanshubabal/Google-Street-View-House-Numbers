@@ -2,6 +2,7 @@ from __future__ import print_function
 import os
 import sys
 import gzip
+import h5py
 import pickle
 import random
 import scipy.io
@@ -70,13 +71,10 @@ def download_and_create_data() :
         hf.create_dataset("train_images",  data=X_train_multi)
         hf.create_dataset("train_labels",  data=Y_train_multi)
         hf.create_dataset("test_images",  data=X_test_multi)
-        hf.create_dataset("test_labels",  data=Y_test_multi)
-    
-    print('MNIST Datasets ready in datasets/pickles/SVHN_multi.hdf5')
-    
+        hf.create_dataset("test_labels",  data=Y_test_multi)    
 
 
-    print('Final Data Saved as hdf5 File : MNIST_multi.hdf5  in the directory datasets/MNIST/')
+    print('Final Data Saved as hdf5 File : MNIST_multi.hdf5  in the directory datasets/pickles/')
     print('----- Process Complete -----')
 
 

@@ -37,7 +37,7 @@ def maybe_download(path, filename, force=False):
 		print('Attempting to download:', filename) 
 		filename, _ = urlretrieve(url + filename, path + filename, reporthook=download_progress_hook)
 		print('\nDownload Complete!')
-	statinfo = os.stat(filename)
+	statinfo = os.stat(path + filename)
 	return path + filename
 
 def maybe_extract(filename, force=False):
