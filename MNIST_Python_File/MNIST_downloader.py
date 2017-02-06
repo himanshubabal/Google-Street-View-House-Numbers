@@ -11,7 +11,7 @@ This File will download MNIST Dataset
 and convert it into .mat format (28 x 28)
 for using in the future
 '''
-
+url = 'http://yann.lecun.com/exdb/mnist/'
 mnist_dataset_location = "datasets/MNIST/"
 
 def download_progress_hook(count, blockSize, totalSize):
@@ -31,14 +31,14 @@ def download_progress_hook(count, blockSize, totalSize):
 	  
 		last_percent_reported = percent
         
-def maybe_download(filename, force=False):
+def maybe_download(path, filename, force=False):
 	"""Download a file if not present, and make sure it's the right size."""
-	if force or not os.path.exists(filename):
+	if force or not os.path.exists(path + filename):
 		print('Attempting to download:', filename) 
-		filename, _ = urlretrieve(url + filename, filename, reporthook=download_progress_hook)
+		filename, _ = urlretrieve(url + filename, path + filename, reporthook=download_progress_hook)
 		print('\nDownload Complete!')
 	statinfo = os.stat(filename)
-	return filename
+	return path + filename
 
 def maybe_extract(filename, force=False):
 	outfile = filename[:-3]

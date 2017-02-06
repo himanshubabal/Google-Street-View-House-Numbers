@@ -30,7 +30,7 @@ print()
 print('2. Download pre-processed pickle file  MNIST_multi.pickle  \n   It will save you a lot of time.')
 print()
 
-user_input = raw_input("Please choose method to get Data. \ni.e. Write 1 or 2 depending on your choice    : ")
+user_input = input("Please choose method to get Data. \ni.e. Write 1 or 2 depending on your choice    : ")
 if user_input == '1' :
 	download_and_create_data()
 else :

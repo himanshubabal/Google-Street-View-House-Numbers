@@ -1,6 +1,5 @@
 from __future__ import print_function
 import numpy as np
-import tensorflow as tf
 from six.moves import cPickle as pickle
 from six.moves import range
 import pickle
@@ -124,7 +123,7 @@ def multiple_img_dataset_generator(X_dataset, Y_dataset, no_of_images_to_combine
     
     n = X_dataset.shape[0]
     w = X_dataset.shape[1]        # Assuming image have same width and height
-    c = no_of_iamges_to_combine
+    c = no_of_images_to_combine
     k = length_of_new_dataset
     
     rand_list = random_list_length_generator(0, n, c, k)
