@@ -5,7 +5,6 @@ import os
 import sys
 import random
 import tarfile
-import tensorflow as tf
 from IPython.display import display, Image
 from scipy import ndimage
 from six.moves.urllib.request import urlretrieve

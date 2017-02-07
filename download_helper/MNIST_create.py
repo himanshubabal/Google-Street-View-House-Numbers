@@ -49,14 +49,33 @@ def download_and_create_data() :
     test_label = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-labels-idx1-ubyte')
 
 
-    X_test_new, Y_test_new = randomize_inputs(test_images, test_label, 2500)
-    X_test_multi, Y_test_multi = multiple_img_dataset_generator(X_test_new, Y_test_new, 5, 10000)
+    X_test_new, Y_test_new = randomize_inputs(test_images, test_label, 5000)
+    X_test_multi, Y_test_multi = multiple_img_dataset_generator(X_test_new, Y_test_new, 5, 15000)
 
-    X_train_new, Y_train_new = randomize_inputs(train_images, train_label, 20000)
-    X_train_multi, Y_train_multi = multiple_img_dataset_generator(X_train_new, Y_train_new, 5, 80000)
+    X_train_new, Y_train_new = randomize_inputs(train_images, train_label, 50000)
+    X_train_multi, Y_train_multi = multiple_img_dataset_generator(X_train_new, Y_train_new, 5, 100000)
 
     X_train_multi = X_train_multi[:,:,:,np.newaxis]
     X_test_multi = X_test_multi[:,:,:,np.newaxis]
+
+    # Removing all-blank images
+    train_zero_ind = list()
+    for i in range(Y_train_multi.shape[0]):
+        l = Y_train_multi[i][0]
+        if l == 0:
+            train_zero_ind.append(i)
+
+    test_zero_ind = list()
+    for i in range(Y_test_multi.shape[0]):
+        l = Y_test_multi[i][0]
+        if l == 0:
+            test_zero_ind.append(i)
+
+    X_train_multi = np.delete(X_train_multi, train_zero_ind,  axis=0)
+    Y_train_multi = np.delete(Y_train_multi, train_zero_ind,  axis=0)
+
+    X_test_multi = np.delete(X_test_multi, test_zero_ind,  axis=0)
+    Y_test_multi = np.delete(Y_test_multi, test_zero_ind,  axis=0)
 
     print('Final train and test datasets sizes')
     print (X_train_multi.shape, Y_train_multi.shape)

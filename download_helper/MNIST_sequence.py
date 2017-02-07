@@ -101,18 +101,23 @@ def stack_matrices_horizontally(list_of_matrices, width_of_image):
 def stack_labels_horizontally(list_of_outputs, no_of_images_to_combine):
     possible_list = [0,1,2,3,4,5,6,7,8,9]
     
+    # 0 --> 10
     outs = []
     for i in list_of_outputs :
         if i in possible_list :
-            outs.append(int(i))
+            if i != 0:
+                outs.append(int(i))
+            else :
+                outs.append(10)
     
     out_l = len(outs)
     
     no_of_blanks = no_of_images_to_combine - out_l
     
+    # Blank --> 0
     blank_list = []
     for i in range(no_of_blanks) :
-        blank_list.append(10)
+        blank_list.append(0)
     
     f_list = [out_l] + outs + blank_list
     
