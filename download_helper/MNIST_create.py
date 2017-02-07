@@ -14,11 +14,11 @@ from sklearn.preprocessing import OneHotEncoder
 from six.moves import cPickle as pickle
 from six.moves import range
 
-from MNIST_Python_File.MNIST_downloader import maybe_download
-from MNIST_Python_File.MNIST_downloader import maybe_extract
+from download_helper.MNIST_downloader import maybe_download
+from download_helper.MNIST_downloader import maybe_extract
 
-from MNIST_Python_File.MNIST_sequence import randomize_inputs
-from MNIST_Python_File.MNIST_sequence import multiple_img_dataset_generator
+from download_helper.MNIST_sequence import randomize_inputs
+from download_helper.MNIST_sequence import multiple_img_dataset_generator
 
 url = 'http://yann.lecun.com/exdb/mnist/'
 mnist_dataset_location = "datasets/MNIST/"

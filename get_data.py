@@ -4,8 +4,9 @@ import sys
 import gzip
 import requests
 from six.moves.urllib.request import urlretrieve
-from MNIST_Python_File.MNIST_create import download_and_create_data
-
+from download_helper.MNIST_create import download_and_create_data
+from download_helper.SVHN_multi import prep_svhn_multi
+from download_helper.SVHN_multi_box import prep_svhn_multi_box
 
 SVHN_new_data_struct_id = '0B4jlyZGFzRIJampwNlk1MjZNTzA'
 SVHN_new_data_struct_name = 'SVHN_new_data_struct.pickle'
@@ -64,7 +65,7 @@ print()
 print('You have two Options to get All the Data : ')
 print('1. Download the Data from Yann LeCun and SVHN Websites and create Formatted Data Now \n   It can be very Slow.')
 print()
-print('2. Download pre-processed files prepared by me. \n   It will save you a lot of time.')
+print('2. Download pre-processed files prepared by me. \n   It will save you a lot of time. \n   RECOMMENDED')
 print()
 
 user_input = input("Please choose method to get Data. \ni.e. Write 1 or 2 depending on your choice    : ")
@@ -78,7 +79,20 @@ if user_input == '1' :
     print('-------------MNIST_multi.hdf5 Complete-------------')
     print('   ')
     print('   ')
-    print('------------Processing MNIST_multi.hdf5------------')
+    print('----------Processing SVHN_multi_box.hdf5-----------')
+    print('---------------------------------------------------')
+    prep_svhn_multi_box()
+    print('----------SVHN_multi_box.hdf5 Completed------------')
+    print('   ')
+    print('   ')
+    print('------------Processing SVHN_multi.hdf5-------------')
+    print('---------------------------------------------------')
+    prep_svhn_multi()
+    print('------------SVHN_multi.hdf5 Completed--------------')
+    print('   ')
+    print('   ')
+    print('All Processes Completed')
+    
 else :
     print('   ')
     print('Following Files will be Downloaded : \n1. SVHN_new_data_struct.pickle (~80 MB)\n2. MNIST_multi.hdf5 (~2 GB)')
