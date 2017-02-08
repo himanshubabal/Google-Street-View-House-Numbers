@@ -43,3 +43,5 @@ train/
 *.hkl
 *.hdf5
 
+# Ignoring Results Pickle
+!results/*.pickle
