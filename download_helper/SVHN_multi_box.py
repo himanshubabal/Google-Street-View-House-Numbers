@@ -14,6 +14,9 @@ import PIL.Image as Image
 #get_ipython().magic('matplotlib inline')
 
 data_path ='datasets/svhn_raw/'
+
+data_path = '/Users/himanshubabal/Documents/External_Disk_Link_WD_HDD/Study/SVHN/SVHN-Full_Dataset/'
+
 url = 'http://ufldl.stanford.edu/housenumbers/'
 last_percent_reported = None
 
@@ -135,7 +138,7 @@ class DigitStructFile:
 def generate_dataset(data, folder):
 
     dataset = np.ndarray([len(data),32,32*3,1], dtype='float32')
-    labels = np.ones([len(data),6], dtype=int) * 10
+    labels = np.ones([len(data),6], dtype=int) * 0
     for i in np.arange(len(data)):
         filename = data[i]['filename']
         fullname = os.path.join(folder, filename)
@@ -148,14 +151,17 @@ def generate_dataset(data, folder):
         height = np.ndarray([num_digit], dtype='float32')
         width = np.ndarray([num_digit], dtype='float32')
         for j in np.arange(num_digit):
-            if j < 5: 
-                labels[i,j+1] = boxes[j]['label']
-                if boxes[j]['label'] == 10: labels[i,j+1] = 0
-            else: print('#',i,'image has more than 5 digits.')
-            top[j] = boxes[j]['top']
-            left[j] = boxes[j]['left']
-            height[j] = boxes[j]['height']
-            width[j] = boxes[j]['width']
+            if j > 5:
+            	continue 
+                # labels[i,j+1] = boxes[j]['label']
+                # if boxes[j]['label'] == 10: labels[i,j+1] = 0
+            else:
+            	# print('#',i,'image has more than 5 digits.')
+            	labels[i,j+1] = boxes[j]['label']
+	            top[j] = boxes[j]['top']
+	            left[j] = boxes[j]['left']
+	            height[j] = boxes[j]['height']
+	            width[j] = boxes[j]['width']
         
         im_top = np.amin(top)
         im_left = np.amin(left)
@@ -177,6 +183,7 @@ def generate_dataset(data, folder):
 
     return dataset, labels
 
+# Image No - 29929 has more than 5 digits.
 def prep_svhn_multi_box() :
     train_filename = maybe_download(data_path + 'train.tar.gz')
     test_filename = maybe_download(data_path + 'test.tar.gz')
