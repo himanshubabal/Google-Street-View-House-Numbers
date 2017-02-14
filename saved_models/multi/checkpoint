@@ -1,2 +1,2 @@
-model_checkpoint_path: "CNN_SVHN_New.ckpt"
-all_model_checkpoint_paths: "CNN_SVHN_New.ckpt"
+model_checkpoint_path: "CNN_SVHN_Multi.ckpt"
+all_model_checkpoint_paths: "CNN_SVHN_Multi.ckpt"
