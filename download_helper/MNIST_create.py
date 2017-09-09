@@ -81,7 +81,7 @@ def download_and_create_data() :
     print (X_train_multi.shape, Y_train_multi.shape)
     print (X_test_multi.shape, Y_test_multi.shape)
 
-    
+
     hdf_file = 'datasets/pickles/MNIST_multi.hdf5'
 
     hdf = h5py.File(hdf_file, 'w')
@@ -90,7 +90,7 @@ def download_and_create_data() :
         hf.create_dataset("train_images",  data=X_train_multi)
         hf.create_dataset("train_labels",  data=Y_train_multi)
         hf.create_dataset("test_images",  data=X_test_multi)
-        hf.create_dataset("test_labels",  data=Y_test_multi)    
+        hf.create_dataset("test_labels",  data=Y_test_multi)
 
 
     print('Final Data Saved as hdf5 File : MNIST_multi.hdf5  in the directory datasets/pickles/')
