@@ -12,7 +12,7 @@ and convert it into .mat format (28 x 28)
 for using in the future
 '''
 url = 'http://yann.lecun.com/exdb/mnist/'
-mnist_dataset_location = "datasets/MNIST/"
+mnist_dataset_location = "/home/himanshubabal/Google-Street-View-House-Numbers/datasets/MNIST/"
 
 def download_progress_hook(count, blockSize, totalSize):
 	"""A hook to report the progress of a download. This is mostly intended for users with
@@ -28,13 +28,13 @@ def download_progress_hook(count, blockSize, totalSize):
 		else:
 		    sys.stdout.write(".")
 		    sys.stdout.flush()
-	  
+
 		last_percent_reported = percent
-        
+
 def maybe_download(path, filename, force=False):
 	"""Download a file if not present, and make sure it's the right size."""
 	if force or not os.path.exists(path + filename):
-		print('Attempting to download:', filename) 
+		print('Attempting to download:', filename)
 		filename, _ = urlretrieve(url + filename, path + filename, reporthook=download_progress_hook)
 		print('\nDownload Complete!')
 	statinfo = os.stat(path + filename)

@@ -8,12 +8,15 @@ import tarfile
 import idx2numpy
 import scipy.misc
 import numpy as np
+import cPickle as pickle
 from PIL import Image
 from PIL import ImageDraw
 import matplotlib.pyplot as plt
 
-data_dir = '/Volumes/700_GB/Study/SVHN/SVHN-Full_Dataset/'
-# data_dir = ''
+from downloader_extracter import maybe_download, maybe_extract
+
+# data_dir = '/Volumes/700_GB/Study/SVHN/SVHN-Full_Dataset/'
+data_dir = '/home/himanshubabal/Google-Street-View-House-Numbers/datasets/svhn_raw/'
 svhn_dataset_location = data_dir
 
 MAX_DIGITS = 10
@@ -92,53 +95,6 @@ class DigitStructFile:
             item['boxes'] = figures
             result.append(item)
         return result
-
-
-struct_file = svhn_dataset_location + 'SVHN_data_struct.pkl'
-
-if os.path.exists(struct_file) :
-#     hdf = h5py.File(struct_file, 'r')
-
-#     # Get the data
-#     test_data = hdf['test_data'][:]
-#     train_data = hdf['train_data'][:]
-#     extra_data = hdf['extra_data'][:]
-    with open(struct_file, 'rb') as f:
-        save = pickle.load(f)
-        test_data = save['test_data']
-        train_data = save['train_data']
-        extra_data = save['extra_data']
-    del save
-
-
-else :
-    fin = os.path.join(svhn_dataset_location + 'test', 'digitStruct.mat')
-    dsf = DigitStructFile(fin)
-    test_data = dsf.getAllDigitStructure_ByDigit()
-
-    fin = os.path.join(svhn_dataset_location + 'train', 'digitStruct.mat')
-    dsf = DigitStructFile(fin)
-    train_data = dsf.getAllDigitStructure_ByDigit()
-
-    fin = os.path.join(svhn_dataset_location + 'extra', 'digitStruct.mat')
-    dsf = DigitStructFile(fin)
-    extra_data = dsf.getAllDigitStructure_ByDigit()
-    # This data point is corrupted
-    del extra_data[118847]
-
-#     hdf = h5py.File(struct_file, 'w')
-#     with hdf as hf:
-#         hf.create_dataset("test_data",  data=test_data)
-#         hf.create_dataset("train_data",  data=train_data)
-#         hf.create_dataset("extra_data",  data=extra_data)
-#     hdf.close()
-
-    with open(struct_file, 'wb') as f:
-        data = {}
-        data['test_data'] = test_data
-        data['train_data'] = train_data
-        data['extra_data'] = extra_data
-        pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
 
 
 # Plot image with it's bounding boxes
@@ -277,11 +233,6 @@ def pipeline_primary(data, folder_name):
     return(images, labels, bboxes)
 
 
-test_images,  test_labels,  test_boxes  = pipeline_primary(test_data,  'test' )
-train_images, train_labels, train_boxes = pipeline_primary(train_data, 'train')
-extra_images, extra_labels, extra_boxes = pipeline_primary(extra_data, 'extra')
-
-
 # saves images, labels, bboxes
 def np_save(save_location, name, images, labels, bboxes):
     np.save(save_location + name + '_images', images)
@@ -303,90 +254,142 @@ def unison_shuffled_copies(a, b, c):
     return (a[p], b[p], c[p])
 
 
-np.save(svhn_dataset_location + 'train_images', train_images)
-np.save(svhn_dataset_location + 'train_labels', train_labels)
-np.save(svhn_dataset_location + 'train_bboxes', train_bboxes)
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # #  P R O C E S S I N G  # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-np.save(svhn_dataset_location + 'test_images', test_images)
-np.save(svhn_dataset_location + 'test_labels', test_labels)
-np.save(svhn_dataset_location + 'test_bboxes', test_bboxes)
+# Download and Extract Data
+# See 'downloader_extractor.py' for details
+svhn_url = 'http://ufldl.stanford.edu/housenumbers/'
+file_list = ['test.tar.gz', 'train.tar.gz', 'extra.tar.gz']
 
-np.save(svhn_dataset_location + 'extra_images', extra_images)
-np.save(svhn_dataset_location + 'extra_labels', extra_labels)
-np.save(svhn_dataset_location + 'extra_bboxes', extra_bboxes)
+for svhn_file in file_list:
+    svhn_zip = maybe_download(svhn_dataset_location, svhn_file, svhn_url + svhn_file)
+    svhn_folder = maybe_extract(svhn_zip)
 
-# train_images = np.load(svhn_dataset_location + 'train_images.npy')
-# train_labels = np.load(svhn_dataset_location + 'train_labels.npy')
-# train_bboxes = np.load(svhn_dataset_location + 'train_bboxes.npy')
-#
-# test_images = np.load(svhn_dataset_location + 'test_images.npy')
-# test_labels = np.load(svhn_dataset_location + 'test_labels.npy')
-# test_bboxes = np.load(svhn_dataset_location + 'test_bboxes.npy')
-#
-# extra_images = np.load(svhn_dataset_location + 'extra_images.npy')
-# extra_labels = np.load(svhn_dataset_location + 'extra_labels.npy')
-# extra_bboxes = np.load(svhn_dataset_location + 'extra_bboxes.npy')
+print('All files downloaded and extracted')
 
-# hdf_file = svhn_dataset_location + 'SVHN_pre.hdf5'
-#
-# hdf = h5py.File(hdf_file, 'w')
-#
-# with hdf as hf:
-#     hf.create_dataset("train_images",  data=train_images)
-#     hf.create_dataset("train_labels",  data=train_labels)
-#     hf.create_dataset("train_bboxes",  data=train_bboxes)
-#
-#     hf.create_dataset("extra_images",  data=extra_images)
-#     hf.create_dataset("extra_labels",  data=extra_labels)
-#     hf.create_dataset("extra_bboxes",  data=extra_bboxes)
-#
-#     hf.create_dataset("test_bboxes",  data=test_bboxes)
-#     hf.create_dataset("test_images",  data=test_images)
-#     hf.create_dataset("test_labels",  data=test_labels)
-
-print(train_images.shape, train_labels.shape, train_bboxes.shape)
-print(test_images.shape , test_labels.shape , test_bboxes.shape )
-print(extra_images.shape, extra_labels.shape, extra_bboxes.shape)
-
-combined_images = np.vstack((train_images, extra_images))
-combined_labels = np.vstack((train_labels, extra_labels))
-combined_bboxes = np.vstack((train_bboxes, extra_bboxes))
-
-print(combined_images.shape, combined_labels.shape, combined_bboxes.shape)
-
-# Shuffling
-combined_images, combined_labels, combined_bboxes = unison_shuffled_copies(combined_images, combined_labels, combined_bboxes)
-
-valid_inputs = 5754
-train_images = combined_images[:len(combined_labels)-valid_inputs]
-train_labels = combined_labels[:len(combined_labels)-valid_inputs]
-train_bboxes = combined_bboxes[:len(combined_labels)-valid_inputs]
-
-valid_images = combined_images[valid_inputs:]
-valid_labels = combined_labels[valid_inputs:]
-valid_bboxes = combined_bboxes[valid_inputs:]
-
-print(train_images.shape, train_labels.shape, train_bboxes.shape)
-print(test_images.shape , test_labels.shape , test_bboxes.shape )
-print(valid_images.shape, valid_labels.shape, valid_bboxes.shape)
-
-del combined_images, combined_labels, combined_bboxes
 
 hdf_file = svhn_dataset_location + 'SVHN.hdf5'
+if not os.path.exists(hdf_file):
+    # Proceed further
+    struct_file = svhn_dataset_location + 'SVHN_data_struct.pkl'
 
-hdf = h5py.File(hdf_file, 'w')
+    if os.path.exists(struct_file) :
+        print('Loading saved SVHN_data_struct.pkl')
+        with open(struct_file, 'rb') as f:
+            save = pickle.load(f)
+            test_data = save['test_data']
+            train_data = save['train_data']
+            extra_data = save['extra_data']
+        del save
 
-with hdf as hf:
-    hf.create_dataset("train_images",  data=train_images)
-    hf.create_dataset("train_labels",  data=train_labels)
-    hf.create_dataset("train_bboxes",  data=train_bboxes)
 
-    hf.create_dataset("valid_images",  data=valid_images)
-    hf.create_dataset("valid_labels",  data=valid_labels)
-    hf.create_dataset("valid_bboxes",  data=valid_bboxes)
+    else :
+        print('Creating SVHN_data_struct.pkl')
+        print('SVHN_data_struct.pkl - test data')
+        fin = os.path.join(svhn_dataset_location + 'test', 'digitStruct.mat')
+        dsf = DigitStructFile(fin)
+        test_data = dsf.getAllDigitStructure_ByDigit()
 
-    hf.create_dataset("test_bboxes",  data=test_bboxes)
-    hf.create_dataset("test_images",  data=test_images)
-    hf.create_dataset("test_labels",  data=test_labels)
+        print('SVHN_data_struct.pkl - train data')
+        fin = os.path.join(svhn_dataset_location + 'train', 'digitStruct.mat')
+        dsf = DigitStructFile(fin)
+        train_data = dsf.getAllDigitStructure_ByDigit()
 
-print('SVHN Datasets saved in SVHN.hdf5')
+        print('SVHN_data_struct.pkl - extra data')
+        fin = os.path.join(svhn_dataset_location + 'extra', 'digitStruct.mat')
+        dsf = DigitStructFile(fin)
+        extra_data = dsf.getAllDigitStructure_ByDigit()
+        # This data point is corrupted
+        del extra_data[118847]
+
+        print('SVHN_data_struct.pkl')
+        with open(struct_file, 'wb') as f:
+            data = {}
+            data['test_data'] = test_data
+            data['train_data'] = train_data
+            data['extra_data'] = extra_data
+            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
+
+
+    # Checking if already done till here
+    npy_data = ['test_images.npy', 'test_labels.npy', 'test_bboxes.npy',
+                'extra_labels.npy', 'extra_bboxes.npy', 'extra_images.npy',
+                'train_labels.npy', 'train_images.npy', 'train_bboxes.npy']
+
+
+    # Check whether process till here has already taken place
+    # If yes, then load saved files
+    if set(npy_data).issubset(os.listdir(svhn_dataset_location)):
+        test_images,  test_labels,  test_bboxes  = np.load(svhn_dataset_location, 'test')
+        train_images, train_labels, train_bboxes = np.load(svhn_dataset_location, 'train')
+        extra_images, extra_labels, extra_bboxes = np.load(svhn_dataset_location, 'extra')
+
+    else:
+        print('Primary Pipeline - test data')
+        test_images,  test_labels,  test_bboxes  = pipeline_primary(test_data,  'test' )
+
+        print('Primary Pipeline - train data')
+        train_images, train_labels, train_bboxes = pipeline_primary(train_data, 'train')
+
+        print('Primary Pipeline - extra data')
+        extra_images, extra_labels, extra_bboxes = pipeline_primary(extra_data, 'extra')
+
+        np_save(svhn_dataset_location, 'test', test_images,  test_labels,  test_bboxes)
+        np_save(svhn_dataset_location, 'train', train_images, train_labels, train_bboxes)
+        np_save(svhn_dataset_location, 'extra', extra_images, extra_labels, extra_bboxes)
+
+    print(train_images.shape, train_labels.shape, train_bboxes.shape)
+    print(test_images.shape , test_labels.shape , test_bboxes.shape )
+    print(extra_images.shape, extra_labels.shape, extra_bboxes.shape)
+
+    print('Combining train and extra data')
+    combined_images = np.vstack((train_images, extra_images))
+    combined_labels = np.vstack((train_labels, extra_labels))
+    combined_bboxes = np.vstack((train_bboxes, extra_bboxes))
+
+    print(combined_images.shape, combined_labels.shape, combined_bboxes.shape)
+
+    # Shuffling
+    print('Shuffling combined data')
+    combined_images, combined_labels, combined_bboxes = unison_shuffled_copies(combined_images, combined_labels, combined_bboxes)
+
+    print('Splitting combined data in train and validation sets')
+    valid_inputs = 5754
+    train_images = combined_images[:len(combined_labels)-valid_inputs]
+    train_labels = combined_labels[:len(combined_labels)-valid_inputs]
+    train_bboxes = combined_bboxes[:len(combined_labels)-valid_inputs]
+
+    valid_images = combined_images[valid_inputs:]
+    valid_labels = combined_labels[valid_inputs:]
+    valid_bboxes = combined_bboxes[valid_inputs:]
+
+    print(train_images.shape, train_labels.shape, train_bboxes.shape)
+    print(test_images.shape , test_labels.shape , test_bboxes.shape )
+    print(valid_images.shape, valid_labels.shape, valid_bboxes.shape)
+
+    del combined_images, combined_labels, combined_bboxes
+
+
+    print('Saving all processed data in SVHN.hdf5')
+    hdf = h5py.File(hdf_file, 'w')
+
+    with hdf as hf:
+        hf.create_dataset("train_images",  data=train_images)
+        hf.create_dataset("train_labels",  data=train_labels)
+        hf.create_dataset("train_bboxes",  data=train_bboxes)
+
+        hf.create_dataset("valid_images",  data=valid_images)
+        hf.create_dataset("valid_labels",  data=valid_labels)
+        hf.create_dataset("valid_bboxes",  data=valid_bboxes)
+
+        hf.create_dataset("test_bboxes",  data=test_bboxes)
+        hf.create_dataset("test_images",  data=test_images)
+        hf.create_dataset("test_labels",  data=test_labels)
+
+    print('SVHN Datasets saved in SVHN.hdf5')
+
+else :
+    print('SVHN Data already processed')

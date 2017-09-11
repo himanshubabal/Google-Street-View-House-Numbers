@@ -24,11 +24,9 @@ train-labels-idx1-ubyte
 
 # Datasets
 #extra.tar.gz
-extra/
 #test.tar.gz
-test/
 #train.tar.gz
-train/
+datasets/svhn_raw/*
 *.tar.gz
 
 # Pickle files

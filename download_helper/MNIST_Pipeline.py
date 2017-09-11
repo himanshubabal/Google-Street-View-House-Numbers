@@ -11,8 +11,10 @@ from PIL import Image
 from PIL import ImageDraw
 import matplotlib.pyplot as plt
 
+from downloader_extracter import maybe_download, maybe_extract
+
 # data_dir = '/Volumes/700_GB/Study/SVHN/SVHN-Full_Dataset/'
-data_dir = '/Users/himanshubabal/Desktop/ML/Assignments/Udacity/ML Nanodegree Projects/P5 Digit Recognition/'
+data_dir = '/home/himanshubabal/Google-Street-View-House-Numbers/'
 mnist_dataset_location = data_dir + 'datasets/MNIST/'
 
 MAX_DIGITS = 10
@@ -194,31 +196,6 @@ def place_images(images_list, padding, label_list, img_style, original_size):
     return(new_image, bbox_list, new_label)
 
 
-# def get_plot_full_img_with_bb(image, bbox_list):
-#     image = draw_rectangles(image, bbox_list)
-#     plt.imshow(image)
-
-
-# Draw bounding boxes on each digit in image
-# def draw_rectangles(image, bbox_list):
-#     img = Image.fromarray(image)
-#     draw = ImageDraw.Draw(img)
-#
-#     for i in range(len(bbox_list)):
-#         x1, y1 = bbox_list[i][0]
-#         x2, y2 = bbox_list[i][1]
-#         draw.rectangle(((x1, y1), (x2, y2)), fill=None, outline=(255))
-#
-#     return(np.asarray(img))
-
-#
-# padding, padded_img = add_random_padding([test_images[10], test_images[11], test_images[12], test_images[14], test_images[15]])
-# new_img, bbox = place_images(len(padded_img), padded_img, padding, [], 4, (28,28))
-#
-# new_size = (64, 64)
-# new_img_resized = scipy.misc.imresize(new_img, new_size)
-
-
 # Get coordinates for new bounding box after resize
 def get_new_bbox(bbox, old_shape, new_shape):
     Ry = (new_shape[0] * 1.00)/old_shape[0]
@@ -327,32 +304,59 @@ def draw_bbox_images(np_images, np_labels, np_box):
     plt.show()
 
 
-test_images = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-images-idx3-ubyte')
-test_label = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-labels-idx1-ubyte')
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # #  P R O C E S S I N G  # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-train_images = idx2numpy.convert_from_file(mnist_dataset_location + 'train-images-idx3-ubyte')
-train_label = idx2numpy.convert_from_file(mnist_dataset_location + 'train-labels-idx1-ubyte')
+# Download and Extract Data
+# See 'downloader_extractor.py' for details
+mnist_url = 'http://yann.lecun.com/exdb/mnist/'
+file_list = ['t10k-images-idx3-ubyte.gz', 'train-images-idx3-ubyte.gz',
+             't10k-labels-idx1-ubyte.gz', 'train-labels-idx1-ubyte.gz']
 
-test_out_images, test_out_labels, test_out_box = pipeline_primary(test_images, test_label, 25000, OUT_SHAPE)
-train_out_images, train_out_labels, train_out_box = pipeline_primary(test_images, test_label, 125000, OUT_SHAPE)
+for mnist_file in file_list:
+    mnist_zip = maybe_download(mnist_dataset_location, mnist_file, mnist_url + mnist_file)
+    mnist_folder = maybe_extract(mnist_zip)
 
-# np.save(mnist_dataset_location + 'train_images', train_out_images)
-# np.save(mnist_dataset_location + 'train_labels', train_out_labels)
-# np.save(mnist_dataset_location + 'train_bboxes', train_out_box)
-#
-# np.save(mnist_dataset_location + 'test_images', test_out_images)
-# np.save(mnist_dataset_location + 'test_labels', test_out_labels)
-# np.save(mnist_dataset_location + 'test_bboxes', test_out_box)
+print('All files downloaded and extracted')
 
 
-hdf = h5py.File(mnist_dataset_location + 'MNIST_manufactured_data.hdf5', 'w')
-with hdf as hf:
-    hf.create_dataset("train_images",  data=train_out_images)
-    hf.create_dataset("train_labels",  data=train_out_labels)
-    hf.create_dataset("train_bboxes",  data=train_out_box)
 
-    hf.create_dataset("test_images",  data=test_out_images)
-    hf.create_dataset("test_labels",  data=test_out_labels)
-    hf.create_dataset("test_bboxes",  data=test_out_box)
+h5py_file_name = 'MNIST_manufactured_data.hdf5'
+if not os.path.exists(mnist_dataset_location + h5py_file_name):
+    print('Reading Test Data')
+    test_images = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-images-idx3-ubyte')
+    test_label = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-labels-idx1-ubyte')
 
-    hf.close()
+    print('Reading Train Data')
+    train_images = idx2numpy.convert_from_file(mnist_dataset_location + 'train-images-idx3-ubyte')
+    train_label = idx2numpy.convert_from_file(mnist_dataset_location + 'train-labels-idx1-ubyte')
+
+    print('Manufacturing Test')
+    test_out_images, test_out_labels, test_out_box = pipeline_primary(test_images, test_label, 25000, OUT_SHAPE)
+    print('Manufacturing Train')
+    train_out_images, train_out_labels, train_out_box = pipeline_primary(test_images, test_label, 125000, OUT_SHAPE)
+
+    # np.save(mnist_dataset_location + 'train_images', train_out_images)
+    # np.save(mnist_dataset_location + 'train_labels', train_out_labels)
+    # np.save(mnist_dataset_location + 'train_bboxes', train_out_box)
+    #
+    # np.save(mnist_dataset_location + 'test_images', test_out_images)
+    # np.save(mnist_dataset_location + 'test_labels', test_out_labels)
+    # np.save(mnist_dataset_location + 'test_bboxes', test_out_box)
+
+    print('Saving MNIST_manufactured_data.hdf5')
+    hdf = h5py.File(mnist_dataset_location + h5py_file_name, 'w')
+    with hdf as hf:
+        hf.create_dataset("train_images",  data=train_out_images)
+        hf.create_dataset("train_labels",  data=train_out_labels)
+        hf.create_dataset("train_bboxes",  data=train_out_box)
+
+        hf.create_dataset("test_images",  data=test_out_images)
+        hf.create_dataset("test_labels",  data=test_out_labels)
+        hf.create_dataset("test_bboxes",  data=test_out_box)
+
+        hf.close()
+
+else:
+    print('MNIST Data already processed')
