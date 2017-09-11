@@ -359,5 +359,19 @@ if not os.path.exists(mnist_dataset_location + h5py_file_name):
 
         hf.close()
 
+    # Creating smaller datasets so ram usage is lower
+    trial_images = train_images[:100]
+    trial_labels = train_labels[:100]
+    trial_bboxes = train_bboxes[:100]
+
+    print('Saving all processed data in SVHN.hdf5')
+    hdf = h5py.File(mnist_dataset_location + 'MNIST_trial.hdf5', 'w')
+
+    with hdf as hf:
+        hf.create_dataset("trial_images",  data=trial_images)
+        hf.create_dataset("trial_labels",  data=trial_labels)
+        hf.create_dataset("trial_bboxes",  data=trial_bboxes)
+        hf.close()
+
 else:
     print('MNIST Data already processed')

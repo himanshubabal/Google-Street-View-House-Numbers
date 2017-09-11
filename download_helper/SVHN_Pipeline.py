@@ -390,7 +390,23 @@ if not os.path.exists(hdf_file):
         hf.create_dataset("test_images",  data=test_images)
         hf.create_dataset("test_labels",  data=test_labels)
 
+        hf.close()
+
     print('SVHN Datasets saved in SVHN.hdf5')
 
+    # Creating smaller datasets so ram usage is lower
+    trial_images = train_images[:100]
+    trial_labels = train_labels[:100]
+    trial_bboxes = train_bboxes[:100]
+
+    print('Saving all processed data in SVHN.hdf5')
+        hdf = h5py.File(svhn_dataset_location + 'SVHN_trial.hdf5', 'w')
+
+        with hdf as hf:
+            hf.create_dataset("trial_images",  data=trial_images)
+            hf.create_dataset("trial_labels",  data=trial_labels)
+            hf.create_dataset("trial_bboxes",  data=trial_bboxes)
+            hf.close()
 else :
     print('SVHN Data already processed')
+
