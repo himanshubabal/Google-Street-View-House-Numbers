@@ -43,3 +43,6 @@ datasets/svhn_raw/*
 
 # Ignoring Results Pickle
 !results/*.pickle
+
+saved_models/*
+tf_logs/*
