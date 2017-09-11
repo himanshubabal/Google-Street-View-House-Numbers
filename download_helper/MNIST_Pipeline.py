@@ -12,10 +12,11 @@ from PIL import ImageDraw
 import matplotlib.pyplot as plt
 
 from downloader_extracter import maybe_download, maybe_extract
+from path import data_dir
 
 # data_dir = '/Volumes/700_GB/Study/SVHN/SVHN-Full_Dataset/'
-data_dir = '/home/himanshubabal/Google-Street-View-House-Numbers/'
-mnist_dataset_location = data_dir + 'datasets/MNIST/'
+# data_dir = '/home/himanshubabal/Google-Street-View-House-Numbers/'
+mnist_dataset_location = data_dir + 'MNIST/'
 
 MAX_DIGITS = 10
 label_width = MAX_DIGITS + 1
