@@ -242,9 +242,10 @@ def np_save(save_location, name, images, labels, bboxes):
 
 # load images, labels, bboxes
 def np_load(save_location, name):
-    images = np.load(save_location + name + '_images.npy')
-    labels = np.load(save_location + name + '_labels.npy')
-    bboxes = np.load(save_location + name + '_bboxes.npy')
+    loc = str(save_location + name)
+    images = np.load(loc + '_images.npy')
+    labels = np.load(loc + '_labels.npy')
+    bboxes = np.load(loc + '_bboxes.npy')
 
     return(images, labels, bboxes)
 
@@ -324,9 +325,10 @@ if not os.path.exists(hdf_file):
     # Check whether process till here has already taken place
     # If yes, then load saved files
     if set(npy_data).issubset(os.listdir(svhn_dataset_location)):
-        test_images,  test_labels,  test_bboxes  = np.load(svhn_dataset_location, 'test')
-        train_images, train_labels, train_bboxes = np.load(svhn_dataset_location, 'train')
-        extra_images, extra_labels, extra_bboxes = np.load(svhn_dataset_location, 'extra')
+        print('Loading saved .npy files')
+        test_images,  test_labels,  test_bboxes  = np_load(svhn_dataset_location, 'test')
+        train_images, train_labels, train_bboxes = np_load(svhn_dataset_location, 'train')
+        extra_images, extra_labels, extra_bboxes = np_load(svhn_dataset_location, 'extra')
 
     else:
         print('Primary Pipeline - test data')
@@ -363,9 +365,9 @@ if not os.path.exists(hdf_file):
     train_labels = combined_labels[:len(combined_labels)-valid_inputs]
     train_bboxes = combined_bboxes[:len(combined_labels)-valid_inputs]
 
-    valid_images = combined_images[valid_inputs:]
-    valid_labels = combined_labels[valid_inputs:]
-    valid_bboxes = combined_bboxes[valid_inputs:]
+    valid_images = combined_images[len(combined_labels)-valid_inputs:]
+    valid_labels = combined_labels[len(combined_labels)-valid_inputs:]
+    valid_bboxes = combined_bboxes[len(combined_labels)-valid_inputs:]
 
     print(train_images.shape, train_labels.shape, train_bboxes.shape)
     print(test_images.shape , test_labels.shape , test_bboxes.shape )
@@ -400,13 +402,13 @@ if not os.path.exists(hdf_file):
     trial_bboxes = train_bboxes[:100]
 
     print('Saving all processed data in SVHN.hdf5')
-        hdf = h5py.File(svhn_dataset_location + 'SVHN_trial.hdf5', 'w')
+    hdf = h5py.File(svhn_dataset_location + 'SVHN_trial.hdf5', 'w')
 
-        with hdf as hf:
-            hf.create_dataset("trial_images",  data=trial_images)
-            hf.create_dataset("trial_labels",  data=trial_labels)
-            hf.create_dataset("trial_bboxes",  data=trial_bboxes)
-            hf.close()
+    with hdf as hf:
+        hf.create_dataset("trial_images",  data=trial_images)
+        hf.create_dataset("trial_labels",  data=trial_labels)
+        hf.create_dataset("trial_bboxes",  data=trial_bboxes)
+        hf.close()
 else :
     print('SVHN Data already processed')
 

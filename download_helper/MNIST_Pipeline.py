@@ -323,7 +323,7 @@ print('All files downloaded and extracted')
 
 
 
-h5py_file_name = 'MNIST_manufactured_data.hdf5'
+h5py_file_name = 'MNIST.hdf5'
 if not os.path.exists(mnist_dataset_location + h5py_file_name):
     print('Reading Test Data')
     test_images = idx2numpy.convert_from_file(mnist_dataset_location + 't10k-images-idx3-ubyte')
@@ -338,15 +338,19 @@ if not os.path.exists(mnist_dataset_location + h5py_file_name):
     print('Manufacturing Train')
     train_out_images, train_out_labels, train_out_box = pipeline_primary(test_images, test_label, 125000, OUT_SHAPE)
 
-    # np.save(mnist_dataset_location + 'train_images', train_out_images)
-    # np.save(mnist_dataset_location + 'train_labels', train_out_labels)
-    # np.save(mnist_dataset_location + 'train_bboxes', train_out_box)
-    #
-    # np.save(mnist_dataset_location + 'test_images', test_out_images)
-    # np.save(mnist_dataset_location + 'test_labels', test_out_labels)
-    # np.save(mnist_dataset_location + 'test_bboxes', test_out_box)
+    valid_inputs = 5000
+    l = len(train_out_labels)
 
-    print('Saving MNIST_manufactured_data.hdf5')
+    valid_out_images = train_out_images[l-valid_inputs:]
+    valid_out_labels = train_out_labels[l-valid_inputs:]
+    valid_out_box = train_out_box[l-valid_inputs:]
+
+    train_out_images = train_out_images[:l-valid_inputs]
+    train_out_labels = train_out_labels[:l-valid_inputs]
+    train_out_box = train_out_box[:l-valid_inputs]
+
+
+    print('Saving MNIST.hdf5')
     hdf = h5py.File(mnist_dataset_location + h5py_file_name, 'w')
     with hdf as hf:
         hf.create_dataset("train_images",  data=train_out_images)
@@ -357,14 +361,17 @@ if not os.path.exists(mnist_dataset_location + h5py_file_name):
         hf.create_dataset("test_labels",  data=test_out_labels)
         hf.create_dataset("test_bboxes",  data=test_out_box)
 
+        hf.create_dataset("valid_images",  data=valid_out_images)
+        hf.create_dataset("valid_labels",  data=valid_out_labels)
+        hf.create_dataset("valid_bboxes",  data=valid_out_box)
+
         hf.close()
 
     # Creating smaller datasets so ram usage is lower
-    trial_images = train_images[:100]
-    trial_labels = train_labels[:100]
-    trial_bboxes = train_bboxes[:100]
+    trial_images = train_out_images[:100]
+    trial_labels = train_out_labels[:100]
+    trial_bboxes = train_out_box[:100]
 
-    print('Saving all processed data in SVHN.hdf5')
     hdf = h5py.File(mnist_dataset_location + 'MNIST_trial.hdf5', 'w')
 
     with hdf as hf:
@@ -372,6 +379,8 @@ if not os.path.exists(mnist_dataset_location + h5py_file_name):
         hf.create_dataset("trial_labels",  data=trial_labels)
         hf.create_dataset("trial_bboxes",  data=trial_bboxes)
         hf.close()
+
+    print('MNIST data processes')
 
 else:
     print('MNIST Data already processed')
