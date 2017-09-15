@@ -3,6 +3,7 @@ import tensorflow as tf
 import h5py
 import math
 import os
+import cPickle as pickle
 
 from path import data_dir, proj_dir
 from nn_functions import *
@@ -69,12 +70,83 @@ def get_trial_data(hdf_file_path):
     return(data)
 
 
-# data = get_trial_data(hdf_file_path=data_dir + 'svhn_raw/SVHN_trial.hdf5')
-# data = get_data(hdf_file_path=data_dir + 'svhn_raw/SVHN.hdf5')
-data = get_data(hdf_file_path=data_dir + 'MNIST/MNIST.hdf5')
+def save_obj(obj, name):
+    with open(name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+
+def load_obj(name):
+    with open(name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
+
+# trial_data = get_trial_data(hdf_file_path=data_dir + 'svhn_raw/SVHN_trial.hdf5')
+# graph_trial, graph_vars = TF_Graph().create_graph()
+# train_model = TF_Train(data=trial_data, TF_Graph=graph_trial, Graph_vars=graph_vars,
+#                        to_save_full_model=True, to_save_epoch_model=True,
+#                        model_save_path=proj_dir + 'saved_models/' + 'trial/',
+#                        model_save_name='trial', to_load_model=True,
+#                        load_model_dir=proj_dir + 'saved_models/' + 'trial/Full/',
+#                        load_model_name='trial', to_log=True, log_path=proj_dir + 'tf_logs/trial/',
+#                        BATCH_SIZE=2, NUM_EPOCHS=2).train()
+# save_obj(train_model, proj_dir + 'saved_models/trial')
+
+# tt = load_obj(proj_dir + 'saved_models/trial')
+# print(tt)
+
+
+# mnist_data = get_data(hdf_file_path=data_dir + 'MNIST/MNIST.hdf5')
+# graph_trial, graph_vars = TF_Graph().create_graph()
+# mnist_train_model = TF_Train(data=mnist_data,
+#                              TF_Graph=graph_trial,
+#                              Graph_vars=graph_vars,
+#                              to_save_full_model=True,
+#                              to_save_epoch_model=True,
+#                              model_save_path=proj_dir + 'saved_models/' + 'MNIST/',
+#                              model_save_name='mnist',
+#                              to_load_model=False,
+#                              load_model_dir='',
+#                              load_model_name='',
+#                              to_log=True,
+#                              log_path=proj_dir + 'tf_logs/MNIST/',
+#                              BATCH_SIZE=128,
+#                              NUM_EPOCHS=20).train()
+
+# save_obj(mnist_train_model, proj_dir + 'saved_models/mnist')
+# del mnist_data, graph_trial, graph_vars, mnist_train_model
+
+svhn_data = get_data(hdf_file_path=data_dir + 'svhn_raw/SVHN.hdf5')
+# graph_trial, graph_vars = TF_Graph().create_graph()
+# svhn_train_model = TF_Train(data=svhn_data,
+#                             TF_Graph=graph_trial,
+#                             Graph_vars=graph_vars,
+#                             to_save_full_model=True,
+#                             to_save_epoch_model=True,
+#                             model_save_path=proj_dir + 'saved_models/' + 'svhn/',
+#                             model_save_name='svhn',
+#                             to_load_model=False,
+#                             load_model_dir='',
+#                             load_model_name='',
+#                             to_log=True,
+#                             log_path=proj_dir + 'tf_logs/svhn/',
+#                             BATCH_SIZE=128,
+#                             NUM_EPOCHS=20).train()
+# save_obj(svhn_train_model, proj_dir + 'saved_models/svhn')
+# del graph_trial, graph_vars, svhn_train_model
+
 graph_trial, graph_vars = TF_Graph().create_graph()
-train_model = TF_Train(data=data, TF_Graph=graph_trial, Graph_vars=graph_vars,
-                       to_save_full_model=False, to_save_epoch_model=False,
-                       model_save_path=proj_dir + 'saved_models/' + 'trial/',
-                       model_save_name='trial', to_load_model=False, load_model_path='',
-                       to_log=False, log_path=proj_dir + 'tf_logs/trial/', BATCH_SIZE=128, NUM_EPOCHS=5).train()
+svhn_mnist_train_model = TF_Train(data=svhn_data,
+                                  TF_Graph=graph_trial,
+                                  Graph_vars=graph_vars,
+                                  to_save_full_model=True,
+                                  to_save_epoch_model=True,
+                                  model_save_path=proj_dir + 'saved_models/' + 'svhn_mnist/',
+                                  model_save_name='svhn_mnist',
+                                  to_load_model=True,
+                                  load_model_dir=proj_dir + 'saved_models/' + 'MNIST/Full/',
+                                  load_model_name='mnist',
+                                  to_log=True,
+                                  log_path=proj_dir + 'tf_logs/svhn_mnist/',
+                                  BATCH_SIZE=128,
+                                  NUM_EPOCHS=20).train()
+save_obj(svhn_mnist_train_model, proj_dir + 'saved_models/svhn_mnist')

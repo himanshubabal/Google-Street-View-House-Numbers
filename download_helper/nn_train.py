@@ -20,8 +20,8 @@ class TF_Train():
     #                model_saver, summary_op, loss_digits, loss_bboxes, loss_total]
     def __init__(self, data, TF_Graph, Graph_vars, to_save_full_model=True, to_save_epoch_model=True,
                  model_save_path=proj_dir + 'saved_models', model_save_name='tf', to_load_model=False,
-                 load_model_path=proj_dir + 'saved_models/tf', to_log=False, log_path=proj_dir + 'tf_logs',
-                 BATCH_SIZE=128, NUM_EPOCHS=5, verbose=True):
+                 load_model_dir=proj_dir + 'saved_models/', load_model_name='tf', to_log=False,
+                 log_path=proj_dir + 'tf_logs', BATCH_SIZE=128, NUM_EPOCHS=5, verbose=True):
         self.train_images = data['train'][0]
         self.train_labels = data['train'][1]
         self.train_bboxes = data['train'][2]
@@ -40,7 +40,8 @@ class TF_Train():
         self.model_save_path = model_save_path
         self.model_save_name = model_save_name
         self.to_load_model = to_load_model
-        self.load_model_path = load_model_path
+        self.load_model_dir = load_model_dir
+        self.load_model_name = load_model_name
         self.to_log = to_log
         self.log_path = log_path
 
@@ -83,12 +84,13 @@ class TF_Train():
                 print('Initalizing...')
 
             # Load saved model or initalize a new one
-            if os.path.isfile(self.load_model_path + '.meta'):
+            if os.path.isfile(self.load_model_dir + self.load_model_name + '.meta'):
                 if self.to_load_model:
                     print('Saved Model found')
-                    model_saver = tf.train.import_meta_graph(self.load_model_path + '.meta')
-                    model_saver.restore(sess, tf.train.latest_checkpoint(self.load_model_path + './'))
-                    print('Loading Saved Model')
+                    model_saver = tf.train.import_meta_graph(self.load_model_dir +
+                                                             self.load_model_name + '.meta')
+                    model_saver.restore(session, tf.train.latest_checkpoint(self.load_model_dir + './'))
+                    print('Loaded Saved Model')
             else:
                 tf.global_variables_initializer().run()
 
